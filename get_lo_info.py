@@ -71,6 +71,25 @@ elif (str(HOME) == '/usr/lusers/pmacc'):
 
 elif (str(HOME) == '/mmfs1/home/pmacc'):
     lo_env = 'pm_klone'
+
+if str(HOME) == '/Users/erinbroatch':
+    lo_env = 'eb_mac'
+    which_matlab = '/Applications/MATLAB_R2020b.app/toolbox/matlab/general/matlab.m' #not sure about this
+    #roms_out2 = parent / 'LiveOcean_roms' / 'output'    # LiveOcean past I
+    #roms_out3 = parent / 'LiveOcean_roms' / 'output'    # LiveOcean past II (same as I)
+
+elif (str(HOME) == '/home/ebroatch') & ('boiler' in HOSTNAME):
+    lo_env = 'eb_boiler'
+    roms_out1 = Path('/data1/parker/LiveOcean_roms/output')     # LiveOcean current
+    roms_out2 = Path('/pgdat1/parker/LiveOcean_roms/output')    # LiveOcean past I
+    roms_out3 = Path('/pgdat2/parker/LiveOcean_roms/output')    # LiveOcean past II
+
+elif (str(HOME) == '/home/ebroatch') & ('perigee' in HOSTNAME):
+    lo_env = 'eb_perigee'
+    roms_out1 = Path('/boildat1/parker/LiveOcean_roms/output')  # LiveOcean current
+    roms_out2 = Path('/data1/parker/LiveOcean_roms/output')     # LiveOcean past I
+    roms_out3 = Path('/data2/parker/LiveOcean_roms/output')     # LiveOcean past II
+    roms_out4 = Path('/boildat1/parker/LO_roms')                # LO boiler
   
 Ldir0 = dict()
 Ldir0['lo_env'] = lo_env
