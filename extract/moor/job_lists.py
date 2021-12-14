@@ -59,6 +59,18 @@ def get_sta_dict(job_name):
         'Red_Bluff': (-123.10438-.007, 47.41625)
             }
             
+    elif job_name == 'jazzy':
+        sta_dict = {
+        'Middle_Bank': (-123.09651, 48.40935),
+        'East_Bank': (-122.97376, 48.30042),
+        'Upright_Channel': (-122.923005, 48.55410),
+        'Blakely_Orcas': (-122.82880, 48.58790),
+        'Rosario_Strait': (-122.74001, 48.64631),
+        'North_Station': (-123.04166, 48.58330),
+        'South_Station': (-122.94330, 48.42000),
+        'Hein_Bank': (-123.03940, 48.35825)
+            }
+            
     else:
         print('Unsupported job name!')
         a = dict()
