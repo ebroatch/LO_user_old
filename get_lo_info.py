@@ -93,7 +93,6 @@ elif (str(HOME) == '/mmfs1/home/pmacc'):
     remote_dir0 = '/dat1/parker'
     local_user = 'pmacc'
 
-
 if str(HOME) == '/Users/erinbroatch':
     lo_env = 'eb_mac'
     which_matlab = '/Applications/MATLAB_R2020b.app/toolbox/matlab/general/matlab.m' #not sure about this
