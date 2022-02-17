@@ -13,17 +13,17 @@ def get_sta_dict(job_name):
 
     elif job_name == 'mickett_1':
         sta_dict = {
-            'ORCA_Hansville': (-122.6270, 47.9073),
-            'ORCA_Hoodsport': (-123.1126, 47.4218),
-            'ORCA_Point_Wells': (-122.3972, 47.7612),
-            'Central_Main_Stem_Hood_Canal': (-122.989507, 47.574352),
-            'North_Central_Main_Basin': (-122.440755, 47.825099)
+        'ORCA_Hansville': (-122.6270, 47.9073),
+        'ORCA_Hoodsport': (-123.1126, 47.4218),
+        'ORCA_Point_Wells': (-122.3972, 47.7612),
+        'Central_Main_Stem_Hood_Canal': (-122.989507, 47.574352),
+        'North_Central_Main_Basin': (-122.440755, 47.825099)
         }
 
     elif job_name == 'mickett_2':
         sta_dict = {
-            'Carr_Inlet_ORCA': (-122 - 43.8/60, 47 + 16.8/60),
-            'East_of_Fox_Island': (-122 - 35.158/60, 47 + 13.185/60)
+        'Carr_Inlet_ORCA': (-122 - 43.8/60, 47 + 16.8/60),
+        'East_of_Fox_Island': (-122 - 35.158/60, 47 + 13.185/60)
         }
 
     elif job_name == 'stoll_corals':
@@ -41,6 +41,7 @@ def get_sta_dict(job_name):
         'USNM_92620_Lopez': (-122.85, 48.3667),
         }
 
+            
     elif job_name == 'stoll_obs':
         sta_dict = {
         'DOE_SJF002': (-123.025, 48.25),
@@ -86,9 +87,30 @@ def get_sta_dict(job_name):
         'NB': (-122.6270, 47.9073)
         }
 
+    elif job_name == 'ooi':
+        sta_dict = {
+            'CE01':(-124.095, 44.6598), # Oregon Inshore (25 m)
+            'CE02':(-124.304, 44.6393), # Oregon Shelf (80 m)
+            'CE04':(-124.956, 44.3811), # Oregon Offshore (588 m)
+            'PN01A':(-125.3983, 44.5096), # Slope Base (2905 m)
+        }
+
+    elif job_name == 'erika_esci491w2022':
+        sta_dict = {
+        'Olympia': (-122.9165, 47.0823),
+        'Tacoma': (-122.4758, 47.3015),
+        'Seattle_West_Point': (-122.4435, 47.6813),
+        'Bellingham': (-122.5519, 48.7348),
+        'Central_Hood_Canal': (-122.9895, 47.5744),
+        'Skokomish': (-123.1272, 47.3639),
+        'Hein_Bank': (-123.0394, 48.35825),
+        'Admiralty': (-122.6949, 48.1370),
+        'Everett': (-122.2806, 47.9855)
+        }
+
     else:
         print('Unsupported job name!')
         a = dict()
         return a
-        
+
     return sta_dict
