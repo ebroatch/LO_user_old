@@ -146,8 +146,8 @@ def make_initial_info(gridname=gridname):
     elif gridname == 'ae0':
         # analytical model estuary
         dch = gfun.default_choices()
-        lon_list = [-2, 0, 1, 2, 3]
-        x_res_list = [2500, 500, 500, 2500, 2500]
+        lon_list = [-2, 0, 1, 2]
+        x_res_list = [2500, 500, 500, 2500]
         lat_list = [43, 44.9, 45.1, 47]
         y_res_list = [2500, 500, 500, 2500]
         Lon_vec, Lat_vec = gfu.stretched_grid(lon_list, x_res_list,

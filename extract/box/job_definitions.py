@@ -27,11 +27,13 @@ def get_box(job, Lon, Lat):
         vn_list = 'h,f,pm,pn,mask_rho,salt,temp,Uwind,Vwind,shflux'
     elif job == 'surface0':
         aa = [Lon[0], Lon[-1], Lat[0], Lat[-1]]
-        vn_list = 'h,f,pm,pn,mask_rho,salt,temp'
+        # For reasons I do not understand, this gets zeta even when it is not on the
+        # list.  I will put it here to be explicit.
+        vn_list = 'h,f,pm,pn,mask_rho,salt,temp,zeta'
     elif job == 'surface1':
         # For Samantha 2021.12.06
         aa = [Lon[0], Lon[-1], Lat[0], Lat[-1]]
-        vn_list = 'h,pm,pn,mask_rho,salt,temp,sustr,svstr'
+        vn_list = 'h,pm,pn,mask_rho,salt,temp,sustr,svstr,zeta'
     elif job == 'ubc0':
         aa = [-125.016452048434, -124.494612925929, 48.312, 48.7515055163539]
         vn_list = ('h,f,pm,pn,mask_rho,salt,temp,zeta,NO3,phytoplankton,'
@@ -48,4 +50,11 @@ def get_box(job, Lon, Lat):
     elif job == 'desanto':
         aa = [-125.028, -124.8993, 45.2581, 45.3481]
         vn_list = 'h,pm,pn,mask_rho,salt,temp,zeta,u,v'
+    elif job == 'gheibi':
+        aa = [-123.15, -122.84, 48.68, 48.95]
+        vn_list = 'h,pm,pn,mask_rho,salt,temp,zeta,u,v'
+    elif job == 'byrd':
+        aa = [Lon[0], Lon[-1], Lat[0], Lat[-1]]
+        vn_list = 'h,mask_rho,Uwind,Vwind,u,v'
     return aa, vn_list
+    
