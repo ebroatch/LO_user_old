@@ -5,6 +5,7 @@ You would edit the information to reflect whatever grid you are working on.
 """
 import numpy as np
 import pandas as pd
+from scipy import special
 from lo_tools import zfun, Lfun
 
 import sys
@@ -16,7 +17,7 @@ import gfun_utility as gfu
 import gfun
 
 # This is the name of the grid that you are working on.
-gridname = 'ae0'
+gridname = 'sill0'
 
 # default s-coordinate info (could override below)
 s_dict = {'THETA_S': 4, 'THETA_B': 2, 'TCLINE': 10, 'N': 30,
@@ -34,6 +35,12 @@ elif gridname in ['ae0']:
     # make_initial_info() below, but we still assign gridname and tag so
     # that they get saved in the right places
     base_gridname = 'ae0'
+    base_tag = 'v0'
+elif gridname in ['sill0']:
+    # for analytical cases we create the river info and track in
+    # make_initial_info() below, but we still assign gridname and tag so
+    # that they get saved in the right places
+    base_gridname = 'sill0'
     base_tag = 'v0'
 
 def make_initial_info(gridname=gridname):
@@ -174,6 +181,89 @@ def make_initial_info(gridname=gridname):
         track_dir = ri_dir / 'tracks'
         Lfun.make_dir(track_dir)
         track_fn = track_dir / 'creek0.p'
+        track_df = pd.DataFrame()
+        NTR = 100
+        track_df['lon'] = np.linspace(0,4,NTR) # OK to go past edge of domain
+        track_df['lat'] = 45*np.ones(NTR)
+        track_df.to_pickle(track_fn)
+        # NOTE: tracks go from ocean to land
+
+    elif gridname == 'sill0':
+        # analytical model estuary with sills
+        # currently using parameters for the "base case"
+        dch = gfun.default_choices()
+        lon_list = [-4, 0, 2, 3, 4]
+        x_res_list = [2500, 500, 500, 2500, 2500]
+        lat_list = [43, 44.9, 45.1, 47]
+        y_res_list = [2500, 500, 500, 2500]
+        Lon_vec, Lat_vec = gfu.stretched_grid(lon_list, x_res_list, lat_list, y_res_list)
+        lon, lat = np.meshgrid(Lon_vec, Lat_vec)
+
+        dch['analytical'] = True
+        dch['nudging_edges'] = ['north', 'south', 'west']
+        dch['use_z_offset'] = False
+        # tidy up dch
+        dch['z_offset'] = 0.0
+        dch['t_dir'] = 'BLANK'
+        dch['t_list'] = ['BLANK']
+
+        # fixed bathymetry parameters
+        L_estuary = 160000 # 160km long
+        W_estuary = 8000 # 8km wide
+        D_estuary = 200 # 200m max depth
+        sill_steep = 2000 # steepness of sills (transition length in m, approx 10% slope)
+        side_steep = 2000 # steepness of sides and end (transition length in m, approx 10% slope)
+
+        # variable bathymetry parameters
+        sill_num = 3 # number of sills
+        sill_ratio = 0.5 # height ratio of sills
+        sill_length = 4000 # length of sill (length of flat section)
+        constrict_ratio = 0 # constriction ratio at sills
+
+        # calculate additional constants
+        L_basin = L_estuary/(sill_num+1)
+        sill_pos = np.linspace(L_basin,L_estuary-L_basin,3)
+        sill_stretch = sill_steep/4
+        sill_shift = sill_length/2
+        side_stretch = side_steep/4
+
+        # make bathymetry by hand
+        #grid
+        x, y = zfun.ll2xy(lon, lat, 0, 45)
+        #end profile
+        depth_end = ((D_estuary/2)*(special.erf((-(x-L_estuary)/side_stretch)-2)))+(D_estuary/2)
+        #constrictions
+        width_constrict=W_estuary*np.ones(Lon_vec.size)
+        for i in range(sill_num):
+            constrict=W_estuary-(((constrict_ratio*W_estuary/2)*(-special.erf(np.abs((x-sill_pos[i])/sill_stretch)-(2+sill_shift/sill_stretch))))+(constrict_ratio*W_estuary/2))
+            width_constrict=np.minimum(width_constrict,constrict)
+        bottom_width=width_constrict-(2*side_steep)
+        bottom_shift=bottom_width/2
+        #basin shape
+        z_basin=((depth_end/2)*(special.erf(np.abs(y/side_stretch)-(2+bottom_shift/side_stretch))))-(depth_end/2)
+        #sill shape
+        z_sills=-D_estuary*np.ones(x.shape)
+        for i in range(sill_num):
+            sill=-(((sill_ratio*D_estuary/2)*(special.erf(np.abs((x-sill_pos[i])/sill_stretch)-(2+sill_shift/sill_stretch))))+(D_estuary*(1-sill_ratio/2)))
+            z_sills=np.maximum(z_sills,sill)
+        #shelf
+        z_shelf = x * 1e-3
+        #combine surfaces
+        z_estuary=np.maximum(z_basin,z_sills)
+        z=np.minimum(z_estuary,z_shelf)
+
+        # create a river file
+        Ldir = Lfun.Lstart(gridname=base_gridname, tag=base_tag)
+        ri_dir = Ldir['LOo'] / 'pre' / 'river' / Ldir['gtag']
+        Lfun.make_dir(ri_dir)
+        gri_fn = ri_dir / 'river_info.csv'
+        with open(gri_fn, 'w') as rf:
+            rf.write('rname,usgs,ec,nws,ratio,depth,flow_units,temp_units\n')
+            rf.write('creek_sill0,,,,1.0,5.0,m3/s,degC\n')
+        # and make a track for the river
+        track_dir = ri_dir / 'tracks'
+        Lfun.make_dir(track_dir)
+        track_fn = track_dir / 'creek_sill0.p'
         track_df = pd.DataFrame()
         NTR = 100
         track_df['lon'] = np.linspace(0,4,NTR) # OK to go past edge of domain
